@@ -42,11 +42,9 @@ app.get('/todos/:id', function (req, res){
 	if (matchedTodo) {
 		res.json(matchedTodo);
 	} else {
-		res.status(404).send()	
+		res.status(404).send();
 	}
 
-	
-	//res.send('Asking for todo with id of ' + req.params.id)
 })
 
 app.listen(PORT, function () {
