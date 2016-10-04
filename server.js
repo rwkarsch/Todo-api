@@ -47,8 +47,6 @@ app.post('/todos', function (req, res){
 	// push body into array
 	todos.push(body);
 
-//	console.log('description: ' + body.description);
-
 	res.json(body);
 });
 
@@ -60,14 +58,45 @@ app.delete('/todos/:id', function (req, res){
 
 	if (matchedTodo) {
 		todos = _.without(todos, matchedTodo);
-//		todos = newTodos;
+
 		res.json(matchedTodo);
 	} else {
 		res.status(404).json({"error" : "no todo found with that id"});
 	};
 })
 	
+// PUT /todos/:id
+app.put('/todos/:id', function (req, res){
+	var body = _.pick(req.body, 'description', 'completed');
+	var todoId = parseInt(req.params.id, 10);
+	var matchedTodo = _.findWhere(todos, {id: todoId});
+	var validAttributes = {};
 
+	if(!matchedTodo){
+		return res.status(404).send();
+	}
+	
+	// make sure 'completed' property is valid
+	if (body.hasOwnProperty('completed') && _.isBoolean(body.completed) ) {
+		validAttributes.completed = body.completed;
+	} else if (body.hasOwnProperty('completed')){
+		//bad
+		return res.status(400).send;
+	};
+
+	// make sure 'description' property is valid
+	if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0 ) {
+		validAttributes.description = body.description;
+	} else if (body.hasOwnProperty('description')){
+		//bad
+		return res.status(400).send;
+	};
+	
+	// update the record.. HERE 
+	 _.extend(matchedTodo, validAttributes);
+	 res.json(matchedTodo);
+
+})
 
 app.listen(PORT, function () {
 	console.log('Express running on port ' + PORT + '!')
