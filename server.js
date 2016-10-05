@@ -81,7 +81,7 @@ app.put('/todos/:id', function (req, res){
 		validAttributes.completed = body.completed;
 	} else if (body.hasOwnProperty('completed')){
 		//bad
-		return res.status(400).send;
+		return res.status(400).send();
 	};
 
 	// make sure 'description' property is valid
@@ -89,7 +89,7 @@ app.put('/todos/:id', function (req, res){
 		validAttributes.description = body.description;
 	} else if (body.hasOwnProperty('description')){
 		//bad
-		return res.status(400).send;
+		return res.status(400).send();
 	};
 	
 	// update the record.. HERE 
