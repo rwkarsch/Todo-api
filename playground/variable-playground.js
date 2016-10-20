@@ -27,3 +27,4 @@ function addGrades (gradesArr) {
 addGrades(grades);
 console.log(grades);
 
+// this is just to test out git - with Todo API
