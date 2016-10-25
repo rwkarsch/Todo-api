@@ -43,27 +43,40 @@ app.get('/todos', function(req, res) {
 app.get('/todos/:id', function(req, res) {
 	// params are a string, so we need to move it to an integer
 	var todoId = parseInt(req.params.id, 10);
-	var matchedTodo = _.findWhere(todos, {
-		id: todoId
+	db.todo.findById(todoId).then (function (todo){
+		if(todo){
+			res.json(todo.toJSON());
+		} else {
+			res.status(404).send();
+		}, function (e) {
+			res.status(500).json(e);	
+		}
 	});
+});
 
-	if (matchedTodo) {
-		res.json(matchedTodo);
-	} else {
-		res.status(404).send();
-	};
 
-})
+
+	// var matchedTodo = _.findWhere(todos, {
+	// 	id: todoId
+	// });
+
+	// if (matchedTodo) {
+	// 	res.json(matchedTodo);
+	// } else {
+	// 	res.status(404).send();
+	// };
+	// 
+	
+
+	
+
+
 
 //POST /todos
 app.post('/todos', function(req, res) {
 
 	var body = _.pick(req.body, 'description', 'completed');
 
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-	// 	return res.status(400).send();
-	// };
-	// // set body.description to trimmed 
 	body.description = body.description.trim();
 
 	db.todo.create(body).then(function (todo){
@@ -73,11 +86,6 @@ app.post('/todos', function(req, res) {
 	})
  
 
-	// body.id = todoNextId++;
-	// // push body into array
-	// todos.push(body);
-
-	// res.json(body);
 });
 
 // DELETE /todos/:id
