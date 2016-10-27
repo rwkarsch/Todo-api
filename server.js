@@ -48,8 +48,8 @@ aapp.get('/todos/:id', function(req, res) {
 			res.json(todo.toJSON());
 		} else {
 			res.status(404).send();
-		}, function (e) {
-			res.status(500).send();	
+		// }, function (e) {
+		// 	res.status(500).send();	
 		}
 	});
 });
