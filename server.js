@@ -40,7 +40,7 @@ app.get('/todos', function(req, res) {
 });
 
 //GET /todos/:id
-aapp.get('/todos/:id', function(req, res) {
+app.get('/todos/:id', function(req, res) {
 	// params are a string, so we need to move it to an integer
 	var todoId = parseInt(req.params.id, 10);
 	db.todo.findById(todoId).then (function (todo){
