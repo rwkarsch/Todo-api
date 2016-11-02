@@ -35,7 +35,7 @@ sequelize.sync({
 	});
 
 	// Todo.create({
- //  		description: 'Take out trash',
+    //  		description: 'Take out trash',
 	// 	completed: false
 	// }).then(function (todo){
 	// 	return Todo.create({

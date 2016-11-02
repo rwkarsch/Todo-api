@@ -40,19 +40,35 @@ app.get('/todos', function(req, res) {
 });
 
 //GET /todos/:id
+// app.get('/todos/:id', function(req, res) {
+// 	// params are a string, so we need to move it to an integer
+// 	var todoId = parseInt(req.params.id, 10);
+// 	db.todo.findById(todoId).then (function (todo){
+// 		if(todo){
+// 			res.json(todo.toJSON());
+// 		} else {
+// 			res.status(404).send();
+		
+// 		// }, function (e) {
+// 		// 	res.status(500).send();	
+// 		}
+// });
+
 app.get('/todos/:id', function(req, res) {
-	// params are a string, so we need to move it to an integer
 	var todoId = parseInt(req.params.id, 10);
-	db.todo.findById(todoId).then (function (todo){
-		if(todo){
+
+	db.todo.findById(todoId).then (function (todo) {
+		if (!!todo) {
 			res.json(todo.toJSON());
 		} else {
 			res.status(404).send();
-		// }, function (e) {
-		// 	res.status(500).send();	
 		}
+	}, function(e) {
+		res.status(500).send();
 	});
 });
+
+
 
 
 //POST /todos
@@ -94,34 +110,32 @@ app.delete('/todos/:id', function(req, res) {
 app.put('/todos/:id', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 	var todoId = parseInt(req.params.id, 10);
-	var matchedTodo = _.findWhere(todos, {
-		id: todoId
-	});
-	var validAttributes = {};
-
-	if (!matchedTodo) {
-		return res.status(404).send();
-	}
+	var attributes = {};
 
 	// make sure 'completed' property is valid
-	if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
-		validAttributes.completed = body.completed;
-	} else if (body.hasOwnProperty('completed')) {
-		//bad
-		return res.status(400).send();
+	if (body.hasOwnProperty('completed')) {
+		attributes.completed = body.completed;
 	};
 
 	// make sure 'description' property is valid
-	if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0) {
-		validAttributes.description = body.description;
-	} else if (body.hasOwnProperty('description')) {
-		//bad
-		return res.status(400).send();
+	if (body.hasOwnProperty('description')) {
+		attributes.description = body.description;
 	};
 
-	// update the record.. HERE 
-	_.extend(matchedTodo, validAttributes);
-	res.json(matchedTodo);
+	db.todo.findById(todoId).then(function(todo) {
+		if (todo) {
+			todo.update(attributes).then(function(todo) {
+				res.json(todo.toJSON());
+			}, function(e) {
+				res.status(400).json(e);
+			});
+		} else {
+			res.status(404).send();
+		}
+	}, function() {
+		res.status(500).send();
+	});
+
 
 });
 
