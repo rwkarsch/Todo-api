@@ -166,10 +166,10 @@ app.delete('/users/login', middleware.requireAuthentication, function (req, res)
 		res.status(204).send();
 	}).catch(function () {
 		res.status(500).send();
-	})
-})
+	});
+});
 
-db.sequelize.sync().then(function() {
+db.sequelize.sync({force: true}).then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port ' + PORT + '!');
 	});
